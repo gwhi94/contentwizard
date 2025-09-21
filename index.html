@@ -1,337 +1,1167 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Content Wizard — CT Brand</title>
-<style>
-  :root{ --ct-navy:#001f49; --ct-ivory:#f9f6ee; --ct-grey:#373737; --ct-yellow:#ffd000; }
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Content Wizard — CT Brand</title>
+  <style>
+    :root {
+      --ct-navy: #001f49;
+      --ct-ivory: #f9f6ee;
+      --ct-grey: #373737;
+      --ct-yellow: #ffd000;
+    }
 
-  /* Layout */
-  body{font-family:Futura, Arial, sans-serif;margin:0;color:var(--ct-grey);background:var(--ct-navy);height:100vh;overflow:hidden}
-  .wrap{display:grid;grid-template-columns:1fr 420px;height:100vh}
-  @media (max-width:980px){.wrap{grid-template-columns:1fr}}
+    html {
+      font-size: 10px;
+    }
 
-  /* Panel */
-  .panel{padding:28px 24px;background:var(--ct-ivory);color:var(--ct-grey);border-left:4px solid var(--ct-yellow);box-shadow:-4px 0 16px rgba(0,0,0,.15);overflow-y:auto}
-  .panel .h1-wrapper{display:flex;flex-direction:column;align-items:flex-start;gap:4px;margin-bottom:12px}
-  .panel h1{font-size:20px;margin:0;font-weight:800;letter-spacing:.02em;color:var(--ct-navy);text-transform:uppercase;display:flex;align-items:center;gap:8px}
-  .panel .underline{display:block;width:48px;height:3px;background:var(--ct-yellow);border-radius:2px}
-  .wand-icon{font-size:20px;color:var(--ct-yellow)}
+    /* Layout */
+    body {
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      color: var(--ct-grey);
+      background: var(--ct-navy);
+      height: 100vh;
+      overflow: hidden
+    }
 
-  /* Tabs */
-  .tabs{display:flex;gap:8px;margin:14px 0 6px}
-  .tab{padding:8px 12px;border-radius:10px;border:2px solid var(--ct-navy);background:#fff;color:var(--ct-navy);font-weight:800;text-transform:uppercase;cursor:pointer}
-  .tab.active{background:var(--ct-navy);color:#fff}
+    .wrap {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      height: 100vh
+    }
 
-  /* Fields */
-  .field{margin:16px 0 14px}
-  .field label{display:block;font-size:12px;margin-bottom:6px;color:var(--ct-grey);letter-spacing:.06em;text-transform:uppercase;font-weight:700}
-  .row{display:flex;gap:10px;align-items:center}
-  input[type=text],input[type=url],select{width:100%;padding:12px;border-radius:10px;border:1px solid #e6e6e6;background:#fff;color:#111;font-family:Futura, Arial, sans-serif;text-transform:uppercase;outline:none;transition:border-color .2s ease,box-shadow .2s ease}
-  input[type=text]::placeholder,input[type=url]::placeholder{color:#9b9b9b}
-  select{appearance:none;background-image:linear-gradient(45deg,transparent 50%, var(--ct-navy) 50%),linear-gradient(135deg,var(--ct-navy) 50%,transparent 50%);background-position:calc(100% - 18px) calc(1em - 2px),calc(100% - 12px) calc(1em - 2px);background-size:6px 6px,6px 6px;background-repeat:no-repeat}
-  input[type=text]:focus,input[type=url]:focus,select:focus{border-color:var(--ct-yellow);box-shadow:0 0 0 3px rgba(255,208,0,.25)}
+    @media (max-width:980px) {
+      .wrap {
+        grid-template-columns: 1fr
+      }
+    }
 
-  /* Buttons */
-  .btn{padding:12px 16px;border:none;border-radius:12px;background:var(--ct-navy);color:#fff;font-weight:800;cursor:pointer;font-family:Futura, Arial, sans-serif;letter-spacing:.04em;box-shadow:0 4px 12px rgba(0,0,0,.2);transition:transform .08s ease,filter .18s ease,box-shadow .18s ease;text-transform:uppercase}
-  .btn:hover{filter:brightness(1.05)}
-  .btn:active{transform:translateY(1px)}
-  .btn[disabled]{opacity:.6;cursor:not-allowed;filter:grayscale(.3)}
+    /* Panel */
+    .panel {
+      padding: 28px 24px;
+      background: var(--ct-ivory);
+      color: var(--ct-grey);
+      border-left: 4px solid var(--ct-yellow);
+      box-shadow: -4px 0 16px rgba(0, 0, 0, .15);
+      overflow-y: auto
+    }
 
-  /* Window */
-  .window{height:100%;margin:12px;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 18px 40px rgba(0,0,0,.35);background:#1e1e1e;position:relative}
-  .window-header{display:flex;align-items:center;gap:8px;height:34px;padding:0 14px;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(0,0,0,.06));border-bottom:1px solid rgba(255,255,255,.18)}
-  .win-dot{width:12px;height:12px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.25)}
-  .win-dot.red{background:#ff5f57}
-  .win-dot.yellow{background:#febc2e}
-  .win-dot.green{background:#28c840}
-  .window-body{position:relative;flex:1;background:var(--ct-navy)}
-  .watermark{position:absolute;top:8px;right:12px;font-size:13px;font-weight:700;color:rgba(255,255,255,.8);letter-spacing:.06em;pointer-events:none;user-select:none;text-transform:uppercase;background:rgba(0,0,0,.4);padding:2px 6px;border-radius:4px}
+    .panel .h1-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      margin-bottom: 12px
+    }
 
-  /* Stages */
-  .stage{position:absolute;inset:0;overflow:hidden;background:var(--ct-navy);display:none}
-  .stage.active{display:block}
-  .bg-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.9) saturate(1.05)}
-  .stage::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.2),rgba(0,0,0,.55))}
+    .panel h1 {
+      font-size: 20px;
+      margin: 0;
+      font-weight: 800;
+      letter-spacing: .02em;
+      color: var(--ct-navy);
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
 
-  /* HP Hero promo block */
-  .promo-block{position:absolute;display:flex;flex-direction:column;padding:20px 24px;border-radius:18px;color:#fff;text-shadow:0 2px 16px rgba(0,0,0,.35);font-family:Futura, Arial, sans-serif;width:max-content;max-width:90vw;background:linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,.25));backdrop-filter:saturate(1.03);--ox:0px;--oy:0px}
-  .promo-block p{margin:0;line-height:1.05;text-transform:uppercase;word-break:break-word;overflow-wrap:anywhere;hyphens:auto;text-wrap:balance}
-  .promo-limited{font-size:3.2rem;color:#fff;font-weight:500;margin-left:4px!important;text-transform:none!important}
-  .promo-campaign-callout{font-size:8rem;color:#fff;font-weight:600}
-  .promo-main-callout{font-size:6rem;color:var(--ct-yellow);font-weight:600}
-  .promo-savings,.promo-secondary{font-size:3.2rem;color:#fff;font-weight:500}
-  .promo-code{font-size:3.2rem;font-weight:700;text-transform:uppercase!important;margin-top:10px!important}
-  .promo-code .prefix{color:#fff}
-  .promo-code .value{color:var(--ct-yellow)}
-  .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
-  .cta{width:220px;display:flex;border-radius:10px;padding:12px 16px;font-weight:400;cursor:pointer;text-decoration:none;font-family:Futura, Arial, sans-serif;text-transform:uppercase;justify-content:center;background:#e8e8e8;color:#373737;box-shadow:0 6px 14px rgba(0,0,0,.2);transition:background .2s ease,transform .08s ease}
-  .cta:hover{background:#f0f0f0}
-  .cta:active{transform:translateY(1px)}
-  .cta.hide-mobile{display:flex}
-  @media (max-width:480px){.cta.hide-mobile{display:none!important}}
+    .panel .underline {
+      display: block;
+      width: 48px;
+      height: 3px;
+      background: var(--ct-yellow);
+      border-radius: 2px
+    }
 
-  /* Responsive text (preview) */
-  @media (max-width:1200px){.promo-campaign-callout{font-size:6rem}.promo-main-callout{font-size:4.8rem}.promo-savings,.promo-secondary,.promo-limited{font-size:2.6rem}.promo-code{font-size:2.6rem}}
-  @media (max-width:1024px){.promo-campaign-callout{font-size:4.8rem}.promo-main-callout{font-size:3.8rem}.promo-savings,.promo-secondary,.promo-limited{font-size:2.4rem}.promo-code{font-size:2.4rem}}
-  @media (max-width:768px){.promo-campaign-callout{font-size:4rem}.promo-main-callout{font-size:3.4rem}.promo-savings,.promo-secondary,.promo-limited{font-size:2.2rem}.promo-code{font-size:2.2rem}}
-  @media (max-width:480px){.promo-campaign-callout{font-size:3.6rem}.promo-main-callout{font-size:3rem}.promo-savings,.promo-secondary,.promo-limited{font-size:2.1rem}.promo-code{font-size:2.1rem}}
+    .wand-icon {
+      font-size: 20px;
+      color: var(--ct-yellow)
+    }
 
-  /* Dual-position helpers (preview) */
-  @media (min-width:768px){
-    .promo-block[class*=" d-pos-"]{top:auto;right:auto;bottom:auto;left:auto}
-    .promo-block.d-pos-top-left{top:24px;left:24px;transform:translate(var(--ox),var(--oy))}
-    .promo-block.d-pos-top-center{top:24px;left:50%;transform:translate(calc(-50% + var(--ox)),var(--oy))}
-    .promo-block.d-pos-top-right{top:24px;right:24px;transform:translate(var(--ox),var(--oy))}
-    .promo-block.d-pos-middle-left{top:50%;left:24px;transform:translate(var(--ox),calc(-50% + var(--oy)))}
-    .promo-block.d-pos-center{top:50%;left:50%;transform:translate(calc(-50% + var(--ox)),calc(-50% + var(--oy)))}
-    .promo-block.d-pos-middle-right{top:50%;right:24px;transform:translate(var(--ox),calc(-50% + var(--oy)))}
-    .promo-block.d-pos-bottom-left{bottom:24px;left:24px;transform:translate(var(--ox),var(--oy))}
-    .promo-block.d-pos-bottom-center{left:50%;bottom:24px;transform:translate(calc(-50% + var(--ox)),var(--oy))}
-    .promo-block.d-pos-bottom-right{bottom:24px;right:24px;transform:translate(var(--ox),var(--oy))}
-  }
-  @media (max-width:767px){
-    .promo-block[class*=" m-pos-"]{top:auto;right:auto;bottom:auto;left:auto}
-    .promo-block.m-pos-top-left{top:24px;left:24px;transform:translate(var(--ox),var(--oy))}
-    .promo-block.m-pos-top-center{top:24px;left:50%;transform:translate(calc(-50% + var(--ox)),var(--oy))}
-    .promo-block.m-pos-top-right{top:24px;right:24px;transform:translate(var(--ox),var(--oy))}
-    .promo-block.m-pos-middle-left{top:50%;left:24px;transform:translate(var(--ox),calc(-50% + var(--oy)))}
-    .promo-block.m-pos-center{top:50%;left:50%;transform:translate(calc(-50% + var(--ox)),calc(-50% + var(--oy)))}
-    .promo-block.m-pos-middle-right{top:50%;right:24px;transform:translate(var(--ox),calc(-50% + var(--oy)))}
-    .promo-block.m-pos-bottom-left{bottom:24px;left:24px;transform:translate(var(--ox),var(--oy))}
-    .promo-block.m-pos-bottom-center{left:50%;bottom:24px;transform:translate(calc(-50% + var(--ox)),var(--oy))}
-    .promo-block.m-pos-bottom-right{bottom:24px;right:24px;transform:translate(var(--ox),var(--oy))}
-  }
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin: 14px 0 6px
+    }
 
-  /* ===== PLP Tile styles ===== */
-  .plp-stage{position:absolute;inset:0;display:none;place-items:center;background:var(--ct-navy)}
-  .plp-stage.active{display:grid}
-  .plp-grid{display:grid;grid-template-columns:repeat(4, minmax(180px,1fr));gap:18px;width:min(1100px,92%)}
-  .plp-tile{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 10px 26px rgba(0,0,0,.25);display:flex;flex-direction:column;aspect-ratio:428/335}
-  .plp-img{background:#d9d9d9;height:180px;background-size:cover;background-position:center}
-  .plp-content{padding:14px;display:flex;flex-direction:column;gap:8px}
-  .plp-icon{width:28px;height:28px;border-radius:50%;background:var(--ct-navy);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:14px}
-  .plp-primary{font-size:16px;font-weight:800;letter-spacing:.02em;text-transform:uppercase;color:var(--ct-navy)}
-  .plp-sub{font-size:12px;opacity:.8;line-height:1.3;text-transform:none;color:#333}
-  .plp-cta{align-self:flex-start;margin-top:2px;text-decoration:none;font-weight:800;text-transform:uppercase}
+    .tab {
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 2px solid var(--ct-navy);
+      background: #fff;
+      color: var(--ct-navy);
+      font-weight: 800;
+      text-transform: uppercase;
+      cursor: pointer
+    }
 
-  /* Toast & copy overlay */
-  #copyNotice{display:none;color:var(--ct-navy);margin-top:12px;font-size:14px;font-weight:700}
-  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ct-navy);color:#fff;padding:10px 14px;border-radius:10px;border:2px solid rgba(255,208,0,.35);font-weight:700;opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease}
-  .toast.show{opacity:1;transform:translateX(-50%) scale(1.02)}
-  @media (prefers-reduced-motion:reduce){.toast{transition:none}}
-  .copy-overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.65);z-index:9999}
-  .copy-card{width:min(920px,92vw);max-height:86vh;background:#fff;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.5);display:flex;flex-direction:column;overflow:hidden}
-  .copy-card header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #e9e9e9;color:var(--ct-navy);font-weight:800;letter-spacing:.02em;text-transform:uppercase}
-  .copy-card .copy-actions{display:flex;gap:10px;justify-content:flex-end;padding:10px 14px;border-top:1px solid #e9e9e9;background:#fafafa}
-  .copy-card button{padding:10px 14px;border:none;border-radius:10px;background:var(--ct-navy);color:#fff;font-weight:700;cursor:pointer}
-  .copy-card button.secondary{background:#e8e8e8;color:var(--ct-grey)}
-  #copyArea{flex:1;border:none;outline:none;padding:14px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;font-size:12px;line-height:1.4;white-space:pre;resize:none}
-</style>
+    .tab.active {
+      background: var(--ct-navy);
+      color: #fff
+    }
+
+    /* Fields */
+    .field {
+      margin: 16px 0 14px
+    }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      margin-bottom: 6px;
+      color: var(--ct-grey);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      font-weight: 700
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      align-items: center
+    }
+
+    input[type=text],
+    input[type=url],
+    select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #e6e6e6;
+      background: #fff;
+      color: #111;
+      font-family: Futura, Arial, sans-serif;
+      text-transform: uppercase;
+      outline: none;
+      transition: border-color .2s ease, box-shadow .2s ease
+    }
+
+    input[type=text]::placeholder,
+    input[type=url]::placeholder {
+      color: #9b9b9b
+    }
+
+    select {
+      appearance: none;
+      background-image: linear-gradient(45deg, transparent 50%, var(--ct-navy) 50%), linear-gradient(135deg, var(--ct-navy) 50%, transparent 50%);
+      background-position: calc(100% - 18px) calc(1em - 2px), calc(100% - 12px) calc(1em - 2px);
+      background-size: 6px 6px, 6px 6px;
+      background-repeat: no-repeat
+    }
+
+    input[type=text]:focus,
+    input[type=url]:focus,
+    select:focus {
+      border-color: var(--ct-yellow);
+      box-shadow: 0 0 0 3px rgba(255, 208, 0, .25)
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 12px 16px;
+      border: none;
+      border-radius: 12px;
+      background: var(--ct-navy);
+      color: #fff;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: Futura, Arial, sans-serif;
+      letter-spacing: .04em;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, .2);
+      transition: transform .08s ease, filter .18s ease, box-shadow .18s ease;
+      text-transform: uppercase
+    }
+
+    .btn:hover {
+      filter: brightness(1.05)
+    }
+
+    .btn:active {
+      transform: translateY(1px)
+    }
+
+    .btn[disabled] {
+      opacity: .6;
+      cursor: not-allowed;
+      filter: grayscale(.3)
+    }
+
+    /* Window */
+    .window {
+      height: 100%;
+      margin: 12px;
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, .35);
+      background: #1e1e1e;
+      position: relative
+    }
+
+    .window-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 34px;
+      padding: 0 14px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .12), rgba(0, 0, 0, .06));
+      border-bottom: 1px solid rgba(255, 255, 255, .18)
+    }
+
+    .win-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .25)
+    }
+
+    .win-dot.red {
+      background: #ff5f57
+    }
+
+    .win-dot.yellow {
+      background: #febc2e
+    }
+
+    .win-dot.green {
+      background: #28c840
+    }
+
+    .window-body {
+      position: relative;
+      flex: 1;
+      background: var(--ct-navy)
+    }
+
+    .watermark {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, .8);
+      letter-spacing: .06em;
+      pointer-events: none;
+      user-select: none;
+      text-transform: uppercase;
+      background: rgba(0, 0, 0, .4);
+      padding: 2px 6px;
+      border-radius: 4px
+    }
+
+    /* Stages */
+    .stage {
+      position: relative;
+      inset: 0;
+      overflow: hidden;
+      background: var(--ct-navy);
+      display: none
+    }
+
+    .stage.active {
+      display: block
+    }
+
+    .bg-media {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(.9) saturate(1.05)
+    }
+
+    .stage::after {}
+
+    /* HP Hero promo block */
+    .promo-block {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 24px;
+      border-radius: 18px;
+      color: #fff;
+      text-shadow: 0 2px 16px rgba(0, 0, 0, .35);
+      font-family: Futura, Arial, sans-serif;
+      width: max-content;
+      max-width: 90vw;
+      --ox: 0px;
+      --oy: 0px
+    }
+
+    .promo-block p {
+      margin: 0;
+      line-height: 1.05;
+      text-transform: uppercase;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      hyphens: auto;
+      text-wrap: balance
+    }
+
+    .promo-limited {
+      font-size: 3.2rem;
+      color: #fff;
+      font-weight: 500;
+      margin-left: 4px !important;
+      text-transform: none !important
+    }
+
+    .promo-campaign-callout {
+      font-size: 8rem;
+      color: #fff;
+      font-weight: 600
+    }
+
+    .promo-main-callout {
+      font-size: 6rem;
+      color: var(--ct-yellow);
+      font-weight: 600
+    }
+
+    .promo-savings,
+    .promo-secondary {
+      font-size: 3.2rem;
+      color: #fff;
+      font-weight: 500
+    }
+
+    .promo-code {
+      font-size: 3.2rem;
+      font-weight: 700;
+      text-transform: uppercase !important;
+      margin-top: 10px !important
+    }
+
+    .promo-code .prefix {
+      color: #fff
+    }
+
+    .promo-code .value {
+      color: var(--ct-yellow)
+    }
+
+    .cta-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 14px
+    }
+
+    .cta {
+      width: 220px;
+      display: flex;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-weight: 400;
+      cursor: pointer;
+      text-decoration: none;
+      font-family: Futura, Arial, sans-serif;
+      text-transform: uppercase;
+      justify-content: center;
+      background: #e8e8e8;
+      color: #373737;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, .2);
+      transition: background .2s ease, transform .08s ease
+    }
+
+    .cta:hover {
+      background: #f0f0f0
+    }
+
+    .cta:active {
+      transform: translateY(1px)
+    }
+
+    .cta.hide-mobile {
+      display: flex
+    }
+
+    @media (max-width:480px) {
+      .cta.hide-mobile {
+        display: none !important
+      }
+    }
+
+    /* Responsive text (preview) */
+    @media (max-width:1200px) {
+      .promo-campaign-callout {
+        font-size: 6rem
+      }
+
+      .promo-main-callout {
+        font-size: 4.8rem
+      }
+
+      .promo-savings,
+      .promo-secondary,
+      .promo-limited {
+        font-size: 2.6rem
+      }
+
+      .promo-code {
+        font-size: 2.6rem
+      }
+    }
+
+    @media (max-width:1024px) {
+      .promo-campaign-callout {
+        font-size: 4.8rem
+      }
+
+      .promo-main-callout {
+        font-size: 3.8rem
+      }
+
+      .promo-savings,
+      .promo-secondary,
+      .promo-limited {
+        font-size: 2.4rem
+      }
+
+      .promo-code {
+        font-size: 2.4rem
+      }
+    }
+
+    @media (max-width:768px) {
+      .promo-campaign-callout {
+        font-size: 4rem
+      }
+
+      .promo-main-callout {
+        font-size: 3.4rem
+      }
+
+      .promo-savings,
+      .promo-secondary,
+      .promo-limited {
+        font-size: 2.2rem
+      }
+
+      .promo-code {
+        font-size: 2.2rem
+      }
+    }
+
+    @media (max-width:480px) {
+      .promo-campaign-callout {
+        font-size: 3.6rem
+      }
+
+      .promo-main-callout {
+        font-size: 3rem
+      }
+
+      .promo-savings,
+      .promo-secondary,
+      .promo-limited {
+        font-size: 2.1rem
+      }
+
+      .promo-code {
+        font-size: 2.1rem
+      }
+    }
+
+    /* Dual-position helpers (preview) */
+    @media (min-width:768px) {
+      .promo-block[class*=" d-pos-"] {
+        top: auto;
+        right: auto;
+        bottom: auto;
+        left: auto
+      }
+
+      .promo-block.d-pos-top-left {
+        top: 24px;
+        left: 24px;
+        transform: translate(var(--ox), var(--oy))
+      }
+
+      .promo-block.d-pos-top-center {
+        top: 24px;
+        left: 50%;
+        transform: translate(calc(-50% + var(--ox)), var(--oy))
+      }
+
+      .promo-block.d-pos-top-right {
+        top: 24px;
+        right: 24px;
+        transform: translate(var(--ox), var(--oy))
+      }
+
+      .promo-block.d-pos-middle-left {
+        top: 50%;
+        left: 24px;
+        transform: translate(var(--ox), calc(-50% + var(--oy)))
+      }
+
+      .promo-block.d-pos-center {
+        top: 50%;
+        left: 50%;
+        transform: translate(calc(-50% + var(--ox)), calc(-50% + var(--oy)))
+      }
+
+      .promo-block.d-pos-middle-right {
+        top: 50%;
+        right: 24px;
+        transform: translate(var(--ox), calc(-50% + var(--oy)))
+      }
+
+      .promo-block.d-pos-bottom-left {
+        bottom: 24px;
+        left: 24px;
+        transform: translate(var(--ox), var(--oy))
+      }
+
+      .promo-block.d-pos-bottom-center {
+        left: 50%;
+        bottom: 24px;
+        transform: translate(calc(-50% + var(--ox)), var(--oy))
+      }
+
+      .promo-block.d-pos-bottom-right {
+        bottom: 24px;
+        right: 24px;
+        transform: translate(var(--ox), var(--oy))
+      }
+    }
+
+    @media (max-width:767px) {
+      .promo-block[class*=" m-pos-"] {
+        top: auto;
+        right: auto;
+        bottom: auto;
+        left: auto
+      }
+
+      .promo-block.m-pos-top-left {
+        top: 24px;
+        left: 24px;
+        transform: translate(var(--ox), var(--oy))
+      }
+
+      .promo-block.m-pos-top-center {
+        top: 24px;
+        left: 50%;
+        transform: translate(calc(-50% + var(--ox)), var(--oy))
+      }
+
+      .promo-block.m-pos-top-right {
+        top: 24px;
+        right: 24px;
+        transform: translate(var(--ox), var(--oy))
+      }
+
+      .promo-block.m-pos-middle-left {
+        top: 50%;
+        left: 24px;
+        transform: translate(var(--ox), calc(-50% + var(--oy)))
+      }
+
+      .promo-block.m-pos-center {
+        top: 50%;
+        left: 50%;
+        transform: translate(calc(-50% + var(--ox)), calc(-50% + var(--oy)))
+      }
+
+      .promo-block.m-pos-middle-right {
+        top: 50%;
+        right: 24px;
+        transform: translate(var(--ox), calc(-50% + var(--oy)))
+      }
+
+      .promo-block.m-pos-bottom-left {
+        bottom: 24px;
+        left: 24px;
+        transform: translate(var(--ox), var(--oy))
+      }
+
+      .promo-block.m-pos-bottom-center {
+        left: 50%;
+        bottom: 24px;
+        transform: translate(calc(-50% + var(--ox)), var(--oy))
+      }
+
+      .promo-block.m-pos-bottom-right {
+        bottom: 24px;
+        right: 24px;
+        transform: translate(var(--ox), var(--oy))
+      }
+    }
+
+    /* ===== PLP Tile styles ===== */
+    .plp-stage {
+      position: absolute;
+      inset: 0;
+      display: none;
+      place-items: center;
+      background: var(--ct-navy)
+    }
+
+    .plp-stage.active {
+      display: grid
+    }
+
+    .plp-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(180px, 1fr));
+      gap: 18px;
+      width: min(1100px, 92%)
+    }
+
+    .plp-tile {
+      background: #fff;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 10px 26px rgba(0, 0, 0, .25);
+      display: flex;
+      flex-direction: column;
+      aspect-ratio: 428/335
+    }
+
+    .plp-img {
+      background: #d9d9d9;
+      height: 180px;
+      background-size: cover;
+      background-position: center
+    }
+
+    .plp-content {
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px
+    }
+
+    .plp-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--ct-navy);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px
+    }
+
+    .plp-primary {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+      color: var(--ct-navy)
+    }
+
+    .plp-sub {
+      font-size: 12px;
+      opacity: .8;
+      line-height: 1.3;
+      text-transform: none;
+      color: #333
+    }
+
+    .plp-cta {
+      align-self: flex-start;
+      margin-top: 2px;
+      text-decoration: none;
+      font-weight: 800;
+      text-transform: uppercase
+    }
+
+    /* Toast & copy overlay */
+    #copyNotice {
+      display: none;
+      color: var(--ct-navy);
+      margin-top: 12px;
+      font-size: 14px;
+      font-weight: 700
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%);
+      background: var(--ct-navy);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 2px solid rgba(255, 208, 0, .35);
+      font-weight: 700;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease, transform .2s ease
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) scale(1.02)
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+      .toast {
+        transition: none
+      }
+    }
+
+    .copy-overlay {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, .65);
+      z-index: 9999
+    }
+
+    .copy-card {
+      width: min(920px, 92vw);
+      max-height: 86vh;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .5);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden
+    }
+
+    .copy-card header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border-bottom: 1px solid #e9e9e9;
+      color: var(--ct-navy);
+      font-weight: 800;
+      letter-spacing: .02em;
+      text-transform: uppercase
+    }
+
+    .copy-card .copy-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      padding: 10px 14px;
+      border-top: 1px solid #e9e9e9;
+      background: #fafafa
+    }
+
+    .copy-card button {
+      padding: 10px 14px;
+      border: none;
+      border-radius: 10px;
+      background: var(--ct-navy);
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer
+    }
+
+    .copy-card button.secondary {
+      background: #e8e8e8;
+      color: var(--ct-grey)
+    }
+
+    #copyArea {
+      flex: 1;
+      border: none;
+      outline: none;
+      padding: 14px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+      line-height: 1.4;
+      white-space: pre;
+      resize: none
+    }
+
+    .video-bg {
+      width: 100%;
+      scale: 1;
+    }
+
+    .service-banner__wrapper {
+      border-bottom: 1px solid rgba(55, 55, 55, .2);
+      z-index: 11;
+    }
+
+    .bg-white {
+      background-color: #fff !important;
+    }
+
+    .col-100 {
+      width: 100% !important;
+    }
+
+    .position-relative {
+      position: relative !important;
+    }
+
+    .header {
+      z-index: 10;
+    }
+
+    .header__top-section {
+      padding: 0 3.2rem 0 4rem !important;
+    }
+
+    .header__top-section {
+      padding: 0 0 !important;
+      height: 6rem;
+      box-shadow: 0 .8rem .8rem -.3rem rgba(0, 0, 0, .09);
+    }
+
+    .header__top-section {
+      z-index: 4;
+      min-height: 5rem;
+    }
+
+    .service-banner {
+      height: 3.1rem;
+    }
+
+    .homepage .header--wrapper {
+      min-height: 0;
+    }
+
+.devices {
+  display: flex;
+  gap: 40px;
+}
+/* Generic phone frame */
+.phone {
+  background: #000;
+  border-radius: 40px;
+  padding: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Screen area */
+.phone .screen {
+  background: #fff;
+  border-radius: 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Liquid glass overlay */
+.overlay {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #111;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  white-space: nowrap;
+}
+
+/* iPhone 15 Pro size (CSS px) */
+.iphone-15pro {
+  width: 417px;  /* screen + bezels */
+  height: 876px;
+}
+.iphone-15pro .screen {
+  width: 393px;
+  height: 852px;
+}
+
+/* iPhone SE size (CSS px) */
+.iphone-se {
+  width: 399px;
+  height: 691px;
+}
+.iphone-se .screen {
+  width: 375px;
+  height: 667px;
+}
+
+
+  </style>
 </head>
+
 <body>
-<div class="wrap">
-  <main>
-    <div class="window" aria-label="Preview window">
-      <div class="window-header" aria-hidden="true">
-        <span class="win-dot red"></span>
-        <span class="win-dot yellow"></span>
-        <span class="win-dot green"></span>
-      </div>
-      <div class="window-body">
-        <span class="watermark">Prototype 0.1</span>
-
-        <!-- HP HERO STAGE -->
-        <section class="stage hp-stage active" aria-label="HP Hero preview">
-          <img class="bg-media" src="https://images.unsplash.com/photo-1517705008128-361805f42e86?q=80&w=1600&auto=format&fit=crop" alt="Background" />
-          <div id="previewBlock" class="promo-block d-pos-bottom-left m-pos-bottom-left" role="region" aria-label="Promo block preview" tabindex="0">
-            <p class="promo-limited">Limited Time Only</p>
-            <p class="promo-campaign-callout"></p>
-            <p class="promo-main-callout">5 SHIRTS FOR £165</p>
-            <p class="promo-savings">Save up to £200</p>
-            <p class="promo-secondary"></p>
-            <p class="promo-code"><span class="prefix">USE CODE: </span><span class="value">PROPER</span></p>
-            <div class="cta-row">
-              <a class="cta" href="#" rel="noopener">Shop Shirts</a>
-              <a class="cta" href="#" rel="noopener">Shop Polos</a>
-            </div>
-          </div>
-        </section>
-
-        <!-- PLP TILE STAGE -->
-        <section class="plp-stage" aria-label="PLP Tile preview">
-          <div class="plp-grid">
-            <article id="plpTile" class="plp-tile" role="group" aria-label="PLP tile">
-              <div class="plp-img" id="plpImg"></div>
-              <div class="plp-content">
-                <span class="plp-icon" id="plpIcon">★</span>
-                <div class="plp-primary" id="plpPrimary">Perfect Oxford Shirts</div>
-                <div class="plp-sub" id="plpSub">Soft feel, sharp finish. Your everyday essential.</div>
-                <a class="plp-cta" id="plpCta" href="#" rel="noopener">Shop now</a>
+  <div class="wrap">
+    <main>
+      <div class="window" aria-label="Preview window">
+        <div class="window-header" aria-hidden="true">
+          <span class="win-dot red"></span>
+          <span class="win-dot yellow"></span>
+          <span class="win-dot green"></span>
+        </div>
+        <div class="window-body">
+          <!-- HP HERO STAGE -->
+          <section class="stage hp-stage active" aria-label="HP Hero preview">
+            <div class="js-header-wrapper header--wrapper active-service-banner" style="height: auto;">
+              <div class="d-none bg-white position-relative service-banner__wrapper col-100">
+                <div class="service-banner d-flex justify-content-center flex-align-center col-100">
+                </div>
               </div>
-            </article>
-          </div>
-        </section>
+              <header id="header" class="header position-relative bg-white" role="banner">
+                <div class="overlay-body"></div>
+                <div
+                  class="header__top-section position-relative d-flex flex-justify-space-between flex-align-center bg-white p-ends-z p-sides-m">
+                  <div class="col-50 mps-col-25 header__right-section">
+                  </div>
+                </div>
+              </header>
+            </div>
+            <video class="video-bg"
+              poster="https://i.vimeocdn.com/video/2053700711-89c8a16fc6a0c0276dc8d5aab54f91ac4fc55606aba6b7092b90f1c97d46e786-d?mw=1100&amp;mh=466"
+              preload="metadata" muted="" autoplay="" loop="" webkitallowfullscreen="" mozallowfullscreen=""
+              allowfullscreen="">
+              <!-- source -->
+              <source type="video/mp4"
+                src="https://player.vimeo.com/progressive_redirect/playback/1114821436/rendition/720p/file.mp4?loc=external&amp;signature=62b95142d7718dbb1375bbdd1413fe04d3edf0f6238c2cdb9d41a76950e460ec"
+                media="(min-width: 768px)">
+            </video>
+            <div>
+
+              <div class="devices">
+                <!-- iPhone 15 Pro -->
+                <div class="phone iphone-15pro">
+                  <div class="screen">
+                    <div class="overlay">iPhone 15 Pro · 393 × 852</div>
+                  </div>
+                </div>
+
+                <!-- iPhone SE -->
+                <div class="phone iphone-se">
+                  <div class="screen">
+                    <div class="overlay">iPhone SE · 375 × 667</div>
+                  </div>
+                </div>
+              </div>
+
+
+            </div>
+            <div id="previewBlock" class="promo-block d-pos-bottom-left m-pos-bottom-left" role="region"
+              aria-label="Promo block preview" tabindex="0">
+              <p class="promo-limited">Limited Time Only</p>
+              <p class="promo-campaign-callout"></p>
+              <p class="promo-main-callout">5 SHIRTS FOR £165</p>
+              <p class="promo-savings">Save up to £200</p>
+              <p class="promo-secondary"></p>
+              <p class="promo-code"><span class="prefix">USE CODE: </span><span class="value">PROPER</span></p>
+              <div class="cta-row">
+                <a class="cta" href="#" rel="noopener">Shop Shirts</a>
+                <a class="cta" href="#" rel="noopener">Shop Polos</a>
+              </div>
+            </div>
+          </section>
+
+          <!-- PLP TILE STAGE -->
+          <section class="plp-stage" aria-label="PLP Tile preview">
+            <div class="plp-grid">
+              <article id="plpTile" class="plp-tile" role="group" aria-label="PLP tile">
+                <div class="plp-img" id="plpImg"></div>
+                <div class="plp-content">
+                  <span class="plp-icon" id="plpIcon">★</span>
+                  <div class="plp-primary" id="plpPrimary">Perfect Oxford Shirts</div>
+                  <div class="plp-sub" id="plpSub">Soft feel, sharp finish. Your everyday essential.</div>
+                  <a class="plp-cta" id="plpCta" href="#" rel="noopener">Shop now</a>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
       </div>
-    </div>
-    <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  </main>
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </main>
 
-  <aside class="panel" aria-label="Controls">
-    <div class="h1-wrapper">
-      <h1>Content Wizard <span class="wand-icon">🪄</span></h1>
-      <span class="underline"></span>
-    </div>
-
-    <div class="tabs" role="tablist" aria-label="Preview tabs">
-      <button class="tab active" data-tab="hp" role="tab" aria-selected="true" aria-controls="controls-hp">HP Hero</button>
-      <button class="tab" data-tab="plp" role="tab" aria-selected="false" aria-controls="controls-plp">PLP Tile</button>
-    </div>
-
-    <!-- HP HERO CONTROLS -->
-    <div id="controls-hp" data-controls="hp">
-      <div class="field"><label for="limitedText">Limited message</label><input type="text" id="limitedText" placeholder="Limited Time Only / Ends Tonight"></div>
-      <div class="field"><label for="campaignCallout">Campaign callout</label><input type="text" id="campaignCallout" placeholder="Campaign callout"></div>
-      <div class="field"><label for="mainCallout">Main promo callout</label><input type="text" id="mainCallout" placeholder="Main promo callout"></div>
-      <div class="field"><label for="savings">Savings message</label><input type="text" id="savings" placeholder="Save up to ..."></div>
-      <div class="field"><label for="secondary">Secondary promo callout</label><input type="text" id="secondary" placeholder="Secondary promo callout"></div>
-      <div class="field"><label for="code">Promo code</label><input type="text" id="code" placeholder="CODE123"></div>
-
-      <div class="field"><label>CTA 1</label>
-        <div class="row"><input type="text" id="cta1Text" placeholder="CTA text"><input type="url" id="cta1Href" placeholder="URL"></div>
-        <div class="row"><label><input type="checkbox" id="cta1HideMobile"> Hide on mobile?</label></div>
-      </div>
-      <div class="field"><label>CTA 2</label>
-        <div class="row"><input type="text" id="cta2Text" placeholder="CTA text"><input type="url" id="cta2Href" placeholder="URL"></div>
-        <div class="row"><label><input type="checkbox" id="cta2HideMobile"> Hide on mobile?</label></div>
+    <aside class="panel" aria-label="Controls">
+      <div class="h1-wrapper">
+        <h1>Content Wizard <span class="wand-icon">🪄</span></h1>
+        <span class="underline"></span>
       </div>
 
-      <div class="field"><label for="positionDesktop">Desktop position</label>
-        <select id="positionDesktop">
-          <option value="pos-bottom-left">bottom left</option>
-          <option value="pos-bottom-center">bottom center</option>
-          <option value="pos-bottom-right">bottom right</option>
-          <option value="pos-middle-left">middle left</option>
-          <option value="pos-center">center</option>
-          <option value="pos-middle-right">middle right</option>
-          <option value="pos-top-left">top left</option>
-          <option value="pos-top-center">top center</option>
-          <option value="pos-top-right">top right</option>
-          <option value="pos-middle-bottom">middle bottom (alias)</option>
-          <option value="pos-top">top (alias)</option>
-        </select>
-      </div>
-      <div class="field"><label for="positionMobile">Mobile position</label>
-        <select id="positionMobile">
-          <option value="pos-bottom-left">bottom left</option>
-          <option value="pos-bottom-center">bottom center</option>
-          <option value="pos-bottom-right">bottom right</option>
-          <option value="pos-middle-left">middle left</option>
-          <option value="pos-center">center</option>
-          <option value="pos-middle-right">middle right</option>
-          <option value="pos-top-left">top left</option>
-          <option value="pos-top-center">top center</option>
-          <option value="pos-top-right">top right</option>
-          <option value="pos-middle-bottom">middle bottom (alias)</option>
-          <option value="pos-top">top (alias)</option>
-        </select>
+      <div class="tabs" role="tablist" aria-label="Preview tabs">
+        <button class="tab active" data-tab="hp" role="tab" aria-selected="true" aria-controls="controls-hp">HP
+          Hero</button>
+        <button class="tab" data-tab="plp" role="tab" aria-selected="false" aria-controls="controls-plp">PLP
+          Tile</button>
       </div>
 
-      <div class="field"><label><input type="checkbox" id="keepInView"> Keep in view on load</label>
-        <div style="font-size:11px;opacity:.75;margin-top:4px">Nudges the promo into the visible area on load & resize.</div>
+      <!-- HP HERO CONTROLS -->
+      <div id="controls-hp" data-controls="hp">
+        <div class="field"><label for="bgVideo">Background Video (Vimeo URL)</label><input type="text" id="bgVideo"
+            placeholder=""></div>
+        <div class="field"><label for="limitedText">Limited message</label><input type="text" id="limitedText"
+            placeholder="Limited Time Only / Ends Tonight"></div>
+        <div class="field"><label for="campaignCallout">Campaign callout</label><input type="text" id="campaignCallout"
+            placeholder="Campaign callout"></div>
+        <div class="field"><label for="mainCallout">Main promo callout</label><input type="text" id="mainCallout"
+            placeholder="Main promo callout"></div>
+        <div class="field"><label for="savings">Savings message</label><input type="text" id="savings"
+            placeholder="Save up to ..."></div>
+        <div class="field"><label for="secondary">Secondary promo callout</label><input type="text" id="secondary"
+            placeholder="Secondary promo callout"></div>
+        <div class="field"><label for="code">Promo code</label><input type="text" id="code" placeholder="CODE123"></div>
+
+        <div class="field"><label>CTA 1</label>
+          <div class="row"><input type="text" id="cta1Text" placeholder="CTA text"><input type="url" id="cta1Href"
+              placeholder="URL"></div>
+          <div class="row"><label><input type="checkbox" id="cta1HideMobile"> Hide on mobile?</label></div>
+        </div>
+        <div class="field"><label>CTA 2</label>
+          <div class="row"><input type="text" id="cta2Text" placeholder="CTA text"><input type="url" id="cta2Href"
+              placeholder="URL"></div>
+          <div class="row"><label><input type="checkbox" id="cta2HideMobile"> Hide on mobile?</label></div>
+        </div>
+
+        <div class="field"><label for="positionDesktop">Desktop position</label>
+          <select id="positionDesktop">
+            <option value="pos-bottom-left">bottom left</option>
+            <option value="pos-bottom-center">bottom center</option>
+            <option value="pos-bottom-right">bottom right</option>
+            <option value="pos-middle-left">middle left</option>
+            <option value="pos-center">center</option>
+            <option value="pos-middle-right">middle right</option>
+            <option value="pos-top-left">top left</option>
+            <option value="pos-top-center">top center</option>
+            <option value="pos-top-right">top right</option>
+          </select>
+        </div>
+        <div class="field"><label for="positionMobile">Mobile position</label>
+          <select id="positionMobile">
+            <option value="pos-bottom-left">bottom left</option>
+            <option value="pos-bottom-center">bottom center</option>
+            <option value="pos-bottom-right">bottom right</option>
+            <option value="pos-middle-left">middle left</option>
+            <option value="pos-center">center</option>
+            <option value="pos-middle-right">middle right</option>
+            <option value="pos-top-left">top left</option>
+            <option value="pos-top-center">top center</option>
+            <option value="pos-top-right">top right</option>
+          </select>
+        </div>
+
+        <div class="field"><label><input type="checkbox" id="keepInView"> Keep in view on load</label>
+          <div style="font-size:11px;opacity:.75;margin-top:4px">Nudges the promo into the visible area on load &
+            resize.</div>
+        </div>
       </div>
-    </div>
 
-    <!-- PLP TILE CONTROLS -->
-    <div id="controls-plp" data-controls="plp" hidden>
-      <div class="field"><label for="plpPrimaryInput">Primary callout</label><input type="text" id="plpPrimaryInput" placeholder="Primary callout"></div>
-      <div class="field"><label for="plpSubInput">Sub copy</label><input type="text" id="plpSubInput" placeholder="Short supporting copy"></div>
-      <div class="field"><label>CTA</label><div class="row"><input type="text" id="plpCtaTextInput" placeholder="CTA title"><input type="url" id="plpCtaHrefInput" placeholder="URL"></div></div>
-      <div class="field"><label for="plpIconSelect">Icons</label>
-        <select id="plpIconSelect">
-          <option value="star">Star</option><option value="truck">Delivery</option><option value="return">Returns</option><option value="award">Award</option><option value="flag">Flag</option><option value="none">None</option>
-        </select>
+      <!-- PLP TILE CONTROLS -->
+      <div id="controls-plp" data-controls="plp" hidden>
+        <div class="field"><label for="plpPrimaryInput">Primary callout</label><input type="text" id="plpPrimaryInput"
+            placeholder="Primary callout"></div>
+        <div class="field"><label for="plpSubInput">Sub copy</label><input type="text" id="plpSubInput"
+            placeholder="Short supporting copy"></div>
+        <div class="field"><label>CTA</label>
+          <div class="row"><input type="text" id="plpCtaTextInput" placeholder="CTA title"><input type="url"
+              id="plpCtaHrefInput" placeholder="URL"></div>
+        </div>
+        <div class="field"><label for="plpIconSelect">Icons</label>
+          <select id="plpIconSelect">
+            <option value="star">Star</option>
+            <option value="truck">Delivery</option>
+            <option value="return">Returns</option>
+            <option value="award">Award</option>
+            <option value="flag">Flag</option>
+            <option value="none">None</option>
+          </select>
+        </div>
+        <div class="field"><label for="plpImgUrl">Background image URL</label><input type="url" id="plpImgUrl"
+            placeholder="https://..."></div>
       </div>
-      <div class="field"><label for="plpImgUrl">Background image URL</label><input type="url" id="plpImgUrl" placeholder="https://..."></div>
-    </div>
 
-    <div class="row" style="justify-content:flex-start;align-items:center;gap:10px;margin-top:8px">
-      <button class="btn" id="gen">Copy to Clipboard</button>
-      <button class="btn" id="download">Download .html</button>
-    </div>
-    <div id="copyNotice">✅ Code copied to clipboard</div>
-  </aside>
-</div>
+      <div class="row" style="justify-content:flex-start;align-items:center;gap:10px;margin-top:8px">
+        <button class="btn" id="gen">Copy to Clipboard</button>
+        <button class="btn" id="download">Download .html</button>
+      </div>
+      <div id="copyNotice">✅ Code copied to clipboard</div>
+    </aside>
+  </div>
 
-<script>
-/**********************
- * Elements & helpers
- **********************/
-const els={
-  tabs:document.querySelectorAll('.tab'), hpStage:document.querySelector('.hp-stage'), plpStage:document.querySelector('.plp-stage'), panel:document.querySelector('.panel'),
-  limitedText:document.getElementById('limitedText'), campaignCallout:document.getElementById('campaignCallout'), mainCallout:document.getElementById('mainCallout'), savings:document.getElementById('savings'), code:document.getElementById('code'), secondary:document.getElementById('secondary'), cta1Text:document.getElementById('cta1Text'), cta1Href:document.getElementById('cta1Href'), cta2Text:document.getElementById('cta2Text'), cta2Href:document.getElementById('cta2Href'), cta1HideMobile:document.getElementById('cta1HideMobile'), cta2HideMobile:document.getElementById('cta2HideMobile'),
-  positionDesktop:document.getElementById('positionDesktop'), positionMobile:document.getElementById('positionMobile'), preview:document.getElementById('previewBlock'), keepInView:document.getElementById('keepInView'),
-  plpPrimaryInput:document.getElementById('plpPrimaryInput'), plpSubInput:document.getElementById('plpSubInput'), plpCtaTextInput:document.getElementById('plpCtaTextInput'), plpCtaHrefInput:document.getElementById('plpCtaHrefInput'), plpIconSelect:document.getElementById('plpIconSelect'), plpImgUrl:document.getElementById('plpImgUrl'),
-  plpPrimary:document.getElementById('plpPrimary'), plpSub:document.getElementById('plpSub'), plpCta:document.getElementById('plpCta'), plpIcon:document.getElementById('plpIcon'), plpImg:document.getElementById('plpImg'),
-  gen:document.getElementById('gen'), download:document.getElementById('download'), copyNotice:document.getElementById('copyNotice'), toast:document.getElementById('toast'), controlsHP:document.getElementById('controls-hp'), controlsPLP:document.getElementById('controls-plp')
-};
-const pv={ limited: els.preview.querySelector('.promo-limited'), campaign: els.preview.querySelector('.promo-campaign-callout'), main: els.preview.querySelector('.promo-main-callout'), savings: els.preview.querySelector('.promo-savings'), secondary: els.preview.querySelector('.promo-secondary'), codeWrap: els.preview.querySelector('.promo-code'), codeVal: els.preview.querySelector('.promo-code .value'), ctaRow: els.preview.querySelector('.cta-row'), ctas: els.preview.querySelectorAll('.cta') };
-let activeTab='hp';
+  <script>
+    /**********************
+     * Elements & helpers
+     **********************/
+    const els = {
+      tabs: document.querySelectorAll('.tab'), hpStage: document.querySelector('.hp-stage'), plpStage: document.querySelector('.plp-stage'), panel: document.querySelector('.panel'),
+      limitedText: document.getElementById('limitedText'), campaignCallout: document.getElementById('campaignCallout'), mainCallout: document.getElementById('mainCallout'), savings: document.getElementById('savings'), code: document.getElementById('code'), secondary: document.getElementById('secondary'), cta1Text: document.getElementById('cta1Text'), cta1Href: document.getElementById('cta1Href'), cta2Text: document.getElementById('cta2Text'), cta2Href: document.getElementById('cta2Href'), cta1HideMobile: document.getElementById('cta1HideMobile'), cta2HideMobile: document.getElementById('cta2HideMobile'),
+      positionDesktop: document.getElementById('positionDesktop'), positionMobile: document.getElementById('positionMobile'), preview: document.getElementById('previewBlock'), keepInView: document.getElementById('keepInView'),
+      plpPrimaryInput: document.getElementById('plpPrimaryInput'), plpSubInput: document.getElementById('plpSubInput'), plpCtaTextInput: document.getElementById('plpCtaTextInput'), plpCtaHrefInput: document.getElementById('plpCtaHrefInput'), plpIconSelect: document.getElementById('plpIconSelect'), plpImgUrl: document.getElementById('plpImgUrl'),
+      plpPrimary: document.getElementById('plpPrimary'), plpSub: document.getElementById('plpSub'), plpCta: document.getElementById('plpCta'), plpIcon: document.getElementById('plpIcon'), plpImg: document.getElementById('plpImg'),
+      gen: document.getElementById('gen'), download: document.getElementById('download'), copyNotice: document.getElementById('copyNotice'), toast: document.getElementById('toast'), controlsHP: document.getElementById('controls-hp'), controlsPLP: document.getElementById('controls-plp')
+    };
+    const pv = { limited: els.preview.querySelector('.promo-limited'), campaign: els.preview.querySelector('.promo-campaign-callout'), main: els.preview.querySelector('.promo-main-callout'), savings: els.preview.querySelector('.promo-savings'), secondary: els.preview.querySelector('.promo-secondary'), codeWrap: els.preview.querySelector('.promo-code'), codeVal: els.preview.querySelector('.promo-code .value'), ctaRow: els.preview.querySelector('.cta-row'), ctas: els.preview.querySelectorAll('.cta') };
+    let activeTab = 'hp';
 
-function switchTab(name){
-  activeTab=name;
-  els.tabs.forEach(b=>{const on=b.dataset.tab===name; b.classList.toggle('active',on); b.setAttribute('aria-selected', on?'true':'false');});
-  els.hpStage.classList.toggle('active', name==='hp');
-  els.plpStage.classList.toggle('active', name==='plp');
-  els.controlsHP.hidden=(name!=='hp');
-  els.controlsPLP.hidden=(name!=='plp');
-}
-els.tabs.forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
+    function switchTab(name) {
+      activeTab = name;
+      els.tabs.forEach(b => { const on = b.dataset.tab === name; b.classList.toggle('active', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); });
+      els.hpStage.classList.toggle('active', name === 'hp');
+      els.plpStage.classList.toggle('active', name === 'plp');
+      els.controlsHP.hidden = (name !== 'hp');
+      els.controlsPLP.hidden = (name !== 'plp');
+    }
+    els.tabs.forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
 
-/**********************
- * HP Hero preview
- **********************/
-function refreshHP(){
-  pv.limited.textContent=(els.limitedText.value||'').trim();
-  pv.limited.style.display=els.limitedText.value?.trim()?'':'none';
-  pv.campaign.textContent=(els.campaignCallout.value||'').trim();
-  pv.main.textContent=(els.mainCallout.value||'').trim();
-  pv.savings.textContent=(els.savings.value||'').trim();
-  pv.secondary.textContent=(els.secondary.value||'').trim();
-  if(els.code.value?.trim()){ pv.codeWrap.style.display=''; pv.codeVal.textContent=els.code.value.trim().toUpperCase(); } else { pv.codeWrap.style.display='none'; }
-  const show1=els.cta1Text.value?.trim()&&els.cta1Href.value?.trim();
-  const show2=els.cta2Text.value?.trim()&&els.cta2Href.value?.trim();
-  if(show1){ pv.ctas[0].style.display=''; pv.ctas[0].textContent=els.cta1Text.value.trim(); pv.ctas[0].href=els.cta1Href.value.trim(); } else { pv.ctas[0].style.display='none'; }
-  if(show2){ pv.ctas[1].style.display=''; pv.ctas[1].textContent=els.cta2Text.value.trim(); pv.ctas[1].href=els.cta2Href.value.trim(); } else { pv.ctas[1].style.display='none'; }
-  pv.ctas[0].classList.toggle('hide-mobile', !!els.cta1HideMobile.checked);
-  pv.ctas[1].classList.toggle('hide-mobile', !!els.cta2HideMobile.checked);
-  pv.ctaRow.style.display=(show1||show2)?'flex':'none';
-  const d=els.positionDesktop.value; const m=els.positionMobile.value;
-  els.preview.className=`promo-block d-${d} m-${m}`;
-}
+    /**********************
+     * HP Hero preview
+     **********************/
+    function refreshHP() {
+      pv.limited.textContent = (els.limitedText.value || '').trim();
+      pv.limited.style.display = els.limitedText.value?.trim() ? '' : 'none';
+      pv.campaign.textContent = (els.campaignCallout.value || '').trim();
+      pv.main.textContent = (els.mainCallout.value || '').trim();
+      pv.savings.textContent = (els.savings.value || '').trim();
+      pv.secondary.textContent = (els.secondary.value || '').trim();
+      if (els.code.value?.trim()) { pv.codeWrap.style.display = ''; pv.codeVal.textContent = els.code.value.trim().toUpperCase(); } else { pv.codeWrap.style.display = 'none'; }
+      const show1 = els.cta1Text.value?.trim() && els.cta1Href.value?.trim();
+      const show2 = els.cta2Text.value?.trim() && els.cta2Href.value?.trim();
+      if (show1) { pv.ctas[0].style.display = ''; pv.ctas[0].textContent = els.cta1Text.value.trim(); pv.ctas[0].href = els.cta1Href.value.trim(); } else { pv.ctas[0].style.display = 'none'; }
+      if (show2) { pv.ctas[1].style.display = ''; pv.ctas[1].textContent = els.cta2Text.value.trim(); pv.ctas[1].href = els.cta2Href.value.trim(); } else { pv.ctas[1].style.display = 'none'; }
+      pv.ctas[0].classList.toggle('hide-mobile', !!els.cta1HideMobile.checked);
+      pv.ctas[1].classList.toggle('hide-mobile', !!els.cta2HideMobile.checked);
+      pv.ctaRow.style.display = (show1 || show2) ? 'flex' : 'none';
+      const d = els.positionDesktop.value; const m = els.positionMobile.value;
+      els.preview.className = `promo-block d-${d} m-${m}`;
+    }
 
-/**********************
- * PLP preview
- **********************/
-function iconGlyph(n){ switch(n){ case 'truck':return '🚚'; case 'return':return '↩️'; case 'award':return '🏅'; case 'flag':return '🏳️'; case 'star':return '★'; default:return ''; } }
-function refreshPLP(){
-  els.plpPrimary.textContent=(els.plpPrimaryInput.value||'').trim()||'Primary callout';
-  els.plpSub.textContent=(els.plpSubInput.value||'').trim()||'Short supporting copy';
-  const t=(els.plpCtaTextInput.value||'').trim()||'Shop now';
-  const h=(els.plpCtaHrefInput.value||'').trim()||'#';
-  els.plpCta.textContent=t; els.plpCta.href=h;
-  const g=iconGlyph(els.plpIconSelect.value); els.plpIcon.textContent=g||''; els.plpIcon.style.display=g?'inline-flex':'none';
-  const url=(els.plpImgUrl.value||'').trim(); els.plpImg.style.backgroundImage=url?`url('${url}')`:'';
-}
+    /**********************
+     * PLP preview
+     **********************/
+    function iconGlyph(n) { switch (n) { case 'truck': return '🚚'; case 'return': return '↩️'; case 'award': return '🏅'; case 'flag': return '🏳️'; case 'star': return '★'; default: return ''; } }
+    function refreshPLP() {
+      els.plpPrimary.textContent = (els.plpPrimaryInput.value || '').trim() || 'Primary callout';
+      els.plpSub.textContent = (els.plpSubInput.value || '').trim() || 'Short supporting copy';
+      const t = (els.plpCtaTextInput.value || '').trim() || 'Shop now';
+      const h = (els.plpCtaHrefInput.value || '').trim() || '#';
+      els.plpCta.textContent = t; els.plpCta.href = h;
+      const g = iconGlyph(els.plpIconSelect.value); els.plpIcon.textContent = g || ''; els.plpIcon.style.display = g ? 'inline-flex' : 'none';
+      const url = (els.plpImgUrl.value || '').trim(); els.plpImg.style.backgroundImage = url ? `url('${url}')` : '';
+    }
 
-function safe(fn){ try{ fn&&fn(); }catch(e){ console.error('[Content Wizard] preview error:',e); } }
-(function wire(){ const fire=()=>{ safe(refreshHP); safe(refreshPLP); }; els.panel.addEventListener('input',fire,{passive:true}); els.panel.addEventListener('change',fire,{passive:true}); els.panel.addEventListener('keyup',fire,{passive:true}); })();
+    function safe(fn) { try { fn && fn(); } catch (e) { console.error('[Content Wizard] preview error:', e); } }
+    (function wire() { const fire = () => { safe(refreshHP); safe(refreshPLP); }; els.panel.addEventListener('input', fire, { passive: true }); els.panel.addEventListener('change', fire, { passive: true }); els.panel.addEventListener('keyup', fire, { passive: true }); })();
 
-/**********************
- * Export builders
- **********************/
-const EXPORTED_PROMO_CSS=`<style>
+    /**********************
+     * Export builders
+     **********************/
+    const EXPORTED_PROMO_CSS = `<style>
   #ctPromoBlock{position:absolute;display:flex;flex-direction:column;padding:18px 22px;border-radius:16px;color:#fff;text-shadow:0 2px 16px rgba(0,0,0,.35);font-family:Futura, Arial, sans-serif;width:max-content;max-width:90vw;--ox:0px;--oy:0px}
   #ctPromoBlock p{margin:0;line-height:1.05;text-transform:uppercase;word-break:break-word;overflow-wrap:anywhere;hyphens:auto;text-wrap:balance}
   #ctPromoBlock .promo-limited{font-size:3.2rem;color:#fff;font-weight:500;margin-left:4px;text-transform:none}
@@ -352,7 +1182,7 @@ const EXPORTED_PROMO_CSS=`<style>
   @media (max-width:767px){#ctPromoBlock[class*='m-pos-']{top:auto;right:auto;bottom:auto;left:auto}#ctPromoBlock.m-pos-top-left{top:24px;left:24px;transform:translate(var(--ox),var(--oy))}#ctPromoBlock.m-pos-top-center{top:24px;left:50%;transform:translate(calc(-50% + var(--ox)),var(--oy))}#ctPromoBlock.m-pos-top-right{top:24px;right:24px;transform:translate(var(--ox),var(--oy))}#ctPromoBlock.m-pos-middle-left{top:50%;left:24px;transform:translate(var(--ox),calc(-50% + var(--oy)))}#ctPromoBlock.m-pos-center{top:50%;left:50%;transform:translate(calc(-50% + var(--ox)),calc(-50% + var(--oy)))}#ctPromoBlock.m-pos-middle-right{top:50%;right:24px;transform:translate(var(--ox),calc(-50% + var(--oy)))}#ctPromoBlock.m-pos-bottom-left{bottom:24px;left:24px;transform:translate(var(--ox),var(--oy))}#ctPromoBlock.m-pos-bottom-center{left:50%;bottom:24px;transform:translate(calc(-50% + var(--ox)),var(--oy))}#ctPromoBlock.m-pos-bottom-right{bottom:24px;right:24px;transform:translate(var(--ox),var(--oy))}}
 </style>`;
 
-const EXPORTED_PLP_CSS=`<style>
+    const EXPORTED_PLP_CSS = `<style>
   .ct-plp-tile{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 10px 26px rgba(0,0,0,.15);display:flex;flex-direction:column;aspect-ratio:428/335}
   .ct-plp-img{background:linear-gradient(120deg,#eaeaea,#d9d9d9);height:180px;background-size:cover;background-position:center}
   .ct-plp-content{padding:14px;display:flex;flex-direction:column;gap:8px}
@@ -360,73 +1190,76 @@ const EXPORTED_PLP_CSS=`<style>
   .ct-plp-primary{font-size:16px;font-weight:800;letter-spacing:.02em;text-transform:uppercase;color:#001f49}
   .ct-plp-sub{font-size:12px;opacity:.8;line-height:1.3;text-transform:none;color:#333}
   .ct-plp-cta{align-self:flex-start;margin-top:2px;text-decoration:none;font-weight:800;text-transform:uppercase}
+  .ct-injectedCTAs{width:220px};
 </style>`;
 
-const EXPORTED_KEEPINVIEW_JS=['<scr','ipt>(function(){',"var el=document.getElementById('ctPromoBlock');",'if(!el) return;',"if(el.dataset.keepInView!=='true' && el.getAttribute('data-keep-in-view')!=='true') return;","var margin=parseInt(el.dataset.keepMargin||'16',10);",'function clamp(){',"el.style.setProperty('--ox','0px');","el.style.setProperty('--oy','0px');",'var r=el.getBoundingClientRect(), vw=window.innerWidth, vh=window.innerHeight;','var dx=0, dy=0;','if(r.left < margin) dx += (margin - r.left);','if(vw - r.right < margin) dx -= (margin - (vw - r.right));','if(r.top < margin) dy += (margin - r.top);','if(vh - r.bottom < margin) dy -= (margin - (vh - r.bottom));',"el.style.setProperty('--ox', Math.round(dx)+'px');","el.style.setProperty('--oy', Math.round(dy)+'px');",'}','var raf=0; function schedule(){ if(raf) return; raf=requestAnimationFrame(function(){raf=0; clamp();}); }',"window.addEventListener('load', schedule, {passive:true});","window.addEventListener('resize', schedule, {passive:true});",'schedule();','})();','<\/scr','ipt>'].join('');
+    const EXPORTED_KEEPINVIEW_JS = ['<scr', 'ipt>(function(){', "var el=document.getElementById('ctPromoBlock');", 'if(!el) return;', "if(el.dataset.keepInView!=='true' && el.getAttribute('data-keep-in-view')!=='true') return;", "var margin=parseInt(el.dataset.keepMargin||'16',10);", 'function clamp(){', "el.style.setProperty('--ox','0px');", "el.style.setProperty('--oy','0px');", 'var r=el.getBoundingClientRect(), vw=window.innerWidth, vh=window.innerHeight;', 'var dx=0, dy=0;', 'if(r.left < margin) dx += (margin - r.left);', 'if(vw - r.right < margin) dx -= (margin - (vw - r.right));', 'if(r.top < margin) dy += (margin - r.top);', 'if(vh - r.bottom < margin) dy -= (margin - (vh - r.bottom));', "el.style.setProperty('--ox', Math.round(dx)+'px');", "el.style.setProperty('--oy', Math.round(dy)+'px');", '}', 'var raf=0; function schedule(){ if(raf) return; raf=requestAnimationFrame(function(){raf=0; clamp();}); }', "window.addEventListener('load', schedule, {passive:true});", "window.addEventListener('resize', schedule, {passive:true});", 'schedule();', '})();', '<\/scr', 'ipt>'].join('');
 
-function buildHP(){
-  const tmp=els.preview.cloneNode(true);
-  tmp.id='ctPromoBlock';
-  tmp.removeAttribute('aria-label');
-  tmp.removeAttribute('tabindex');
-  tmp.setAttribute('role','region');
-  tmp.setAttribute('aria-label','Promotional content');
-  if(els.keepInView && els.keepInView.checked){ tmp.setAttribute('data-keep-in-view','true'); }
-  tmp.style.removeProperty('--ox'); tmp.style.removeProperty('--oy');
-  const d=els.positionDesktop.value; const m=els.positionMobile.value; tmp.className=`d-${d} m-${m}`;
-  // REQUIRED export classes for CTAs
-  tmp.querySelectorAll('a.cta').forEach(a=>{ a.className='button button__secondary button__secondary--1 bgWhite-textGrey'; });
-  return `${EXPORTED_PROMO_CSS}
+    function buildHP() {
+      const tmp = els.preview.cloneNode(true);
+      tmp.id = 'ctPromoBlock';
+      tmp.removeAttribute('aria-label');
+      tmp.removeAttribute('tabindex');
+      tmp.setAttribute('role', 'region');
+      tmp.setAttribute('aria-label', 'Promotional content');
+      if (els.keepInView && els.keepInView.checked) { tmp.setAttribute('data-keep-in-view', 'true'); }
+      tmp.style.removeProperty('--ox'); tmp.style.removeProperty('--oy');
+      const d = els.positionDesktop.value; const m = els.positionMobile.value; tmp.className = `d-${d} m-${m}`;
+      // REQUIRED export classes for CTAs
+      tmp.querySelectorAll('a.cta').forEach(a => { a.className = 'button button__secondary button__secondary--1 bgWhite-textGrey ct-injectedCTAs'; });
+      return `${EXPORTED_PROMO_CSS}
 ${tmp.outerHTML}
 ${EXPORTED_KEEPINVIEW_JS}`;
-}
+    }
 
-function buildPLP(){
-  const tile=document.createElement('article'); tile.className='ct-plp-tile'; tile.setAttribute('role','group'); tile.setAttribute('aria-label','PLP tile');
-  const img=document.createElement('div'); img.className='ct-plp-img'; const url=(els.plpImgUrl.value||'').trim(); if(url){ img.style.backgroundImage=`url('${url}')`; }
-  const content=document.createElement('div'); content.className='ct-plp-content';
-  const icon=document.createElement('span'); icon.className='ct-plp-icon';
-  const glyph=(function(n){switch(n){case 'truck':return '🚚';case 'return':return '↩️';case 'award':return '🏅';case 'flag':return '🏳️';case 'star':return '★';default:return ''}})(els.plpIconSelect.value);
-  if(glyph){ icon.textContent=glyph; content.appendChild(icon); }
-  const primary=document.createElement('div'); primary.className='ct-plp-primary'; primary.textContent=(els.plpPrimaryInput.value||'').trim()||'Primary callout';
-  const sub=document.createElement('div'); sub.className='ct-plp-sub'; sub.textContent=(els.plpSubInput.value||'').trim()||'Short supporting copy';
-  const cta=document.createElement('a'); cta.className='button button__secondary button__secondary--1 bgWhite-textGrey'; cta.href=(els.plpCtaHrefInput.value||'').trim()||'#'; cta.textContent=(els.plpCtaTextInput.value||'').trim()||'Shop now'; cta.setAttribute('rel','noopener');
-  content.appendChild(primary); content.appendChild(sub); content.appendChild(cta);
-  tile.appendChild(img); tile.appendChild(content);
-  return `${EXPORTED_PLP_CSS}
+    function buildPLP() {
+      const tile = document.createElement('article'); tile.className = 'ct-plp-tile'; tile.setAttribute('role', 'group'); tile.setAttribute('aria-label', 'PLP tile');
+      const img = document.createElement('div'); img.className = 'ct-plp-img'; const url = (els.plpImgUrl.value || '').trim(); if (url) { img.style.backgroundImage = `url('${url}')`; }
+      const content = document.createElement('div'); content.className = 'ct-plp-content';
+      const icon = document.createElement('span'); icon.className = 'ct-plp-icon';
+      const glyph = (function (n) { switch (n) { case 'truck': return '🚚'; case 'return': return '↩️'; case 'award': return '🏅'; case 'flag': return '🏳️'; case 'star': return '★'; default: return '' } })(els.plpIconSelect.value);
+      if (glyph) { icon.textContent = glyph; content.appendChild(icon); }
+      const primary = document.createElement('div'); primary.className = 'ct-plp-primary'; primary.textContent = (els.plpPrimaryInput.value || '').trim() || 'Primary callout';
+      const sub = document.createElement('div'); sub.className = 'ct-plp-sub'; sub.textContent = (els.plpSubInput.value || '').trim() || 'Short supporting copy';
+      const cta = document.createElement('a'); cta.className = 'button button__secondary button__secondary--1 bgWhite-textGrey'; cta.href = (els.plpCtaHrefInput.value || '').trim() || '#'; cta.textContent = (els.plpCtaTextInput.value || '').trim() || 'Shop now'; cta.setAttribute('rel', 'noopener');
+      content.appendChild(primary); content.appendChild(sub); content.appendChild(cta);
+      tile.appendChild(img); tile.appendChild(content);
+      return `${EXPORTED_PLP_CSS}
 ${tile.outerHTML}`;
-}
+    }
 
-function buildOutput(){ return activeTab==='hp'?buildHP():buildPLP(); }
+    function buildOutput() { return activeTab === 'hp' ? buildHP() : buildPLP(); }
 
-function showToast(msg){ const t=els.toast; if(!t) return; t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1400); }
-async function copyTextResilient(text){
-  try{ if(navigator.clipboard?.writeText){ await navigator.clipboard.writeText(text); return true; } }catch(e){}
-  try{ if(navigator.clipboard?.write && window.ClipboardItem){ const item=new ClipboardItem({'text/plain': new Blob([text], {type:'text/plain'})}); await navigator.clipboard.write([item]); return true; } }catch(e){}
-  try{ const ta=document.createElement('textarea'); ta.value=text; ta.setAttribute('readonly',''); ta.style.position='fixed'; ta.style.top='-1000px'; ta.style.opacity='0'; document.body.appendChild(ta); ta.focus(); ta.select(); const ok=document.execCommand('copy'); document.body.removeChild(ta); if(ok) return true; }catch(e){}
-  const overlay=document.getElementById('copyOverlay'); const area=document.getElementById('copyArea'); if(overlay && area){ area.value=text; overlay.style.display='flex'; overlay.setAttribute('aria-hidden','false'); setTimeout(()=>{ area.focus(); area.select(); }, 30); }
-  return false;
-}
+    function showToast(msg) { const t = els.toast; if (!t) return; t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 1400); }
+    async function copyTextResilient(text) {
+      try { if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(text); return true; } } catch (e) { }
+      try { if (navigator.clipboard?.write && window.ClipboardItem) { const item = new ClipboardItem({ 'text/plain': new Blob([text], { type: 'text/plain' }) }); await navigator.clipboard.write([item]); return true; } } catch (e) { }
+      try { const ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.top = '-1000px'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.focus(); ta.select(); const ok = document.execCommand('copy'); document.body.removeChild(ta); if (ok) return true; } catch (e) { }
+      const overlay = document.getElementById('copyOverlay'); const area = document.getElementById('copyArea'); if (overlay && area) { area.value = text; overlay.style.display = 'flex'; overlay.setAttribute('aria-hidden', 'false'); setTimeout(() => { area.focus(); area.select(); }, 30); }
+      return false;
+    }
 
-els.gen.addEventListener('click', async ()=>{ const code=buildOutput(); els.gen.disabled=true; const ok=await copyTextResilient(code); if(ok){ els.copyNotice.style.display='block'; setTimeout(()=>els.copyNotice.style.display='none',1800); showToast('Copied to clipboard'); } else { showToast('Copy blocked — copy manually'); } setTimeout(()=>{ els.gen.disabled=false; },400); });
+    els.gen.addEventListener('click', async () => { const code = buildOutput(); els.gen.disabled = true; const ok = await copyTextResilient(code); if (ok) { els.copyNotice.style.display = 'block'; setTimeout(() => els.copyNotice.style.display = 'none', 1800); showToast('Copied to clipboard'); } else { showToast('Copy blocked — copy manually'); } setTimeout(() => { els.gen.disabled = false; }, 400); });
 
-els.download.addEventListener('click', ()=>{ const blob=new Blob([buildOutput()], {type:'text/html'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download= activeTab==='hp' ? 'ct-hero-block.html':'ct-plp-tile.html'; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 400); });
+    els.download.addEventListener('click', () => { const blob = new Blob([buildOutput()], { type: 'text/html' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = activeTab === 'hp' ? 'ct-hero-block.html' : 'ct-plp-tile.html'; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 400); });
 
-(function init(){ try{ switchTab('hp'); refreshHP(); refreshPLP(); } catch(e){ console.error(e); } })();
-</script>
+    (function init() { try { switchTab('hp'); refreshHP(); refreshPLP(); } catch (e) { console.error(e); } })();
+  </script>
 
-<div id="copyOverlay" class="copy-overlay" role="dialog" aria-modal="true" aria-labelledby="copyTitle" aria-hidden="true">
-  <div class="copy-card">
-    <header>
-      <span id="copyTitle">Manual Copy</span>
-      <button id="copyClose" class="secondary" aria-label="Close">Close</button>
-    </header>
-    <textarea id="copyArea" readonly></textarea>
-    <div class="copy-actions">
-      <button id="selectAll" class="secondary">Select All</button>
-      <button id="copyTry">Copy</button>
+  <div id="copyOverlay" class="copy-overlay" role="dialog" aria-modal="true" aria-labelledby="copyTitle"
+    aria-hidden="true">
+    <div class="copy-card">
+      <header>
+        <span id="copyTitle">Manual Copy</span>
+        <button id="copyClose" class="secondary" aria-label="Close">Close</button>
+      </header>
+      <textarea id="copyArea" readonly></textarea>
+      <div class="copy-actions">
+        <button id="selectAll" class="secondary">Select All</button>
+        <button id="copyTry">Copy</button>
+      </div>
     </div>
   </div>
-</div>
 </body>
+
 </html>
