@@ -27,9 +27,8 @@
       font-family: "Poppins", sans-serif;
       margin: 0;
       color: var(--ct-grey);
-      background: var(--ct-navy);
       height: 100vh;
-      overflow: hidden
+      overflow: auto;
     }
 
     .wrap {
@@ -200,7 +199,7 @@
       height: 100%;
       margin: 12px;
       border-radius: 14px;
-      overflow: hidden;
+      overflow: auto;
       display: flex;
       flex-direction: column;
       box-shadow: 0 18px 40px rgba(0, 0, 0, .35);
@@ -835,68 +834,73 @@
       min-height: 0;
     }
 
-.devices {
-  display: flex;
-  gap: 40px;
-}
-/* Generic phone frame */
-.phone {
-  background: #000;
-  border-radius: 40px;
-  padding: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,.25);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+    .device-wrapper {
+      display: flex;
+      gap: 40px;
+      padding: 40px 24px;
+      background: #f0f0f0;
 
-/* Screen area */
-.phone .screen {
-  background: #fff;
-  border-radius: 28px;
-  position: relative;
-  overflow: hidden;
-}
+      /* scale down if needed */
+      transform: scale(1);
+      transform-origin: top left;
+    }
 
-/* Liquid glass overlay */
-.overlay {
-  position: absolute;
-  bottom: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  color: #111;
-  font-size: 14px;
-  font-weight: 500;
-  padding: 6px 14px;
-  border-radius: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  white-space: nowrap;
-}
+    .device-wrapper .phone {
+      background: #000;
+      padding: 12px;
+      border-radius: 40px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: fit-content;
+    }
 
-/* iPhone 15 Pro size (CSS px) */
-.iphone-15pro {
-  width: 417px;  /* screen + bezels */
-  height: 876px;
-}
-.iphone-15pro .screen {
-  width: 393px;
-  height: 852px;
-}
+    .device-wrapper .screen {
+      position: relative;
+      background: #fff;
+      border-radius: 28px;
+      overflow: hidden;
+    }
 
-/* iPhone SE size (CSS px) */
-.iphone-se {
-  width: 399px;
-  height: 691px;
-}
-.iphone-se .screen {
-  width: 375px;
-  height: 667px;
-}
+    .device-wrapper .overlay {
+      position: absolute;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: #111;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      white-space: nowrap;
+      pointer-events: none;
+    }
 
+    /* ---- Exact screen sizes ---- */
+    .device-wrapper .iphone-se .screen {
+      width: 375px;
+      height: 667px;
+    }
 
+    .device-wrapper .iphone-12p .screen {
+      width: 390px;
+      height: 844px;
+    }
+
+    .device-wrapper .iphone-15p .screen {
+      width: 393px;
+      height: 852px;
+    }
+
+    .device-wrapper .iphone-14pm .screen {
+      width: 430px;
+      height: 932px;
+    }
   </style>
 </head>
 
@@ -926,46 +930,56 @@
                 </div>
               </header>
             </div>
-            <video class="video-bg"
-              poster="https://i.vimeocdn.com/video/2053700711-89c8a16fc6a0c0276dc8d5aab54f91ac4fc55606aba6b7092b90f1c97d46e786-d?mw=1100&amp;mh=466"
-              preload="metadata" muted="" autoplay="" loop="" webkitallowfullscreen="" mozallowfullscreen=""
-              allowfullscreen="">
-              <!-- source -->
-              <source type="video/mp4"
-                src="https://player.vimeo.com/progressive_redirect/playback/1114821436/rendition/720p/file.mp4?loc=external&amp;signature=62b95142d7718dbb1375bbdd1413fe04d3edf0f6238c2cdb9d41a76950e460ec"
-                media="(min-width: 768px)">
-            </video>
+            <div class="position-relative">
+              <video class="video-bg"
+                poster="https://i.vimeocdn.com/video/2053700711-89c8a16fc6a0c0276dc8d5aab54f91ac4fc55606aba6b7092b90f1c97d46e786-d?mw=1100&amp;mh=466"
+                preload="metadata" muted="" autoplay="" loop="" webkitallowfullscreen="" mozallowfullscreen=""
+                allowfullscreen="">
+                <!-- source -->
+                <source type="video/mp4"
+                  src="https://player.vimeo.com/progressive_redirect/playback/1114821436/rendition/720p/file.mp4?loc=external&amp;signature=62b95142d7718dbb1375bbdd1413fe04d3edf0f6238c2cdb9d41a76950e460ec"
+                  media="(min-width: 768px)">
+              </video>
+              <div id="previewBlock" class="promo-block d-pos-bottom-left m-pos-bottom-left" role="region"
+                aria-label="Promo block preview" tabindex="0">
+                <p class="promo-limited">Limited Time Only</p>
+                <p class="promo-campaign-callout"></p>
+                <p class="promo-main-callout">5 SHIRTS FOR £165</p>
+                <p class="promo-savings">Save up to £200</p>
+                <p class="promo-secondary"></p>
+                <p class="promo-code"><span class="prefix">USE CODE: </span><span class="value">PROPER</span></p>
+                <div class="cta-row">
+                  <a class="cta" href="#" rel="noopener">Shop Shirts</a>
+                  <a class="cta" href="#" rel="noopener">Shop Polos</a>
+                </div>
+              </div>
+            </div>
             <div>
 
-              <div class="devices">
-                <!-- iPhone 15 Pro -->
-                <div class="phone iphone-15pro">
-                  <div class="screen">
-                    <div class="overlay">iPhone 15 Pro · 393 × 852</div>
-                  </div>
-                </div>
-
-                <!-- iPhone SE -->
+              <div class="device-wrapper">
                 <div class="phone iphone-se">
                   <div class="screen">
                     <div class="overlay">iPhone SE · 375 × 667</div>
                   </div>
                 </div>
-              </div>
 
+                <div class="phone iphone-12p">
+                  <div class="screen">
+                    <div class="overlay">iPhone 12 Pro · 390 × 844</div>
+                  </div>
+                </div>
 
-            </div>
-            <div id="previewBlock" class="promo-block d-pos-bottom-left m-pos-bottom-left" role="region"
-              aria-label="Promo block preview" tabindex="0">
-              <p class="promo-limited">Limited Time Only</p>
-              <p class="promo-campaign-callout"></p>
-              <p class="promo-main-callout">5 SHIRTS FOR £165</p>
-              <p class="promo-savings">Save up to £200</p>
-              <p class="promo-secondary"></p>
-              <p class="promo-code"><span class="prefix">USE CODE: </span><span class="value">PROPER</span></p>
-              <div class="cta-row">
-                <a class="cta" href="#" rel="noopener">Shop Shirts</a>
-                <a class="cta" href="#" rel="noopener">Shop Polos</a>
+                <div class="phone iphone-15p">
+                  <div class="screen">
+                    <div class="overlay">iPhone 15 Pro · 393 × 852</div>
+                  </div>
+                </div>
+
+                <div class="phone iphone-14pm">
+                  <div class="screen">
+                    <div class="overlay">iPhone 14 Pro Max · 430 × 932</div>
+                  </div>
+                </div>
               </div>
             </div>
           </section>
