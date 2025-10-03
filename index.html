@@ -333,7 +333,7 @@
       font-size: 3.2rem;
       font-weight: 700;
       text-transform: uppercase !important;
-      margin-top: 10px !important
+      margin-top: 20px !important
     }
 
     .promo-code .prefix {
@@ -542,7 +542,7 @@
 
       .promo-block.m-pos-top-left {
         top: 24px;
-        left: 24px;
+        left: 0px;
         transform: translate(var(--ox), var(--oy))
       }
 
@@ -979,7 +979,8 @@
 
     .rep-hero img {
       width: 100%;
-      aspect-ratio: 3/4;
+      aspect-ratio: auto 750 / 1425;
+      ;
       object-fit: cover;
       display: block;
     }
@@ -1048,7 +1049,7 @@
 
     .rep-tile img {
       width: 100%;
-      aspect-ratio: 1/1;
+      aspect-ratio: auto 750 / 1425;
       object-fit: cover;
       display: block;
     }
@@ -1059,10 +1060,106 @@
         font-size: 11px;
       }
     }
+
+    /* --- Preview-only mirroring: make mobile rules apply inside device frames --- */
+    .preview-lab .device-wrapper .rep-hero {
+      position: relative;
+    }
+
+    /* Mobile position helpers (mirror your @media (max-width:767px) block) */
+    .preview-lab .device-wrapper .promo-block[class*=" m-pos-"] {
+      top: auto;
+      right: auto;
+      bottom: auto;
+      left: auto;
+    }
+
+    .preview-lab .device-wrapper .promo-block.m-pos-top-left {
+      top: 24px;
+      left: 24px;
+      transform: translate(var(--ox), var(--oy));
+    }
+
+    .preview-lab .device-wrapper .promo-block.m-pos-top-center {
+      top: 24px;
+      left: 50%;
+      transform: translate(calc(-50% + var(--ox)), var(--oy));
+    }
+
+    .preview-lab .device-wrapper .promo-block.m-pos-top-right {
+      top: 24px;
+      right: 24px;
+      transform: translate(var(--ox), var(--oy));
+    }
+
+    .preview-lab .device-wrapper .promo-block.m-pos-middle-left {
+      top: 50%;
+      left: 24px;
+      transform: translate(var(--ox), calc(-50% + var(--oy)));
+    }
+
+    .preview-lab .device-wrapper .promo-block.m-pos-center {
+      top: 50%;
+      left: 50%;
+      transform: translate(calc(-50% + var(--ox)), calc(-50% + var(--oy)));
+    }
+
+    .preview-lab .device-wrapper .promo-block.m-pos-middle-right {
+      top: 50%;
+      right: 24px;
+      transform: translate(var(--ox), calc(-50% + var(--oy)));
+    }
+
+    .preview-lab .device-wrapper .promo-block.m-pos-bottom-left {
+      bottom: 24px;
+      left: 24px;
+      transform: translate(var(--ox), var(--oy));
+    }
+
+    .preview-lab .device-wrapper .promo-block.m-pos-bottom-center {
+      bottom: 24px;
+      left: 50%;
+      transform: translate(calc(-50% + var(--ox)), var(--oy));
+    }
+
+    .preview-lab .device-wrapper .promo-block.m-pos-bottom-right {
+      bottom: 24px;
+      right: 24px;
+      transform: translate(var(--ox), var(--oy));
+    }
+
+    /* Hide mobile-hidden CTAs in device previews (mirrors your @media rule) */
+    .preview-lab .device-wrapper .promo-block .cta.hide-mobile {
+      display: none !important;
+    }
+
+    /* Mirror the mobile text sizes so the preview matches the export on phones */
+    .preview-lab .device-wrapper .promo-campaign-callout {
+      font-size: 3.6rem;
+    }
+
+    .preview-lab .device-wrapper .promo-main-callout {
+      font-size: 3rem;
+    }
+
+    .preview-lab .device-wrapper .promo-savings,
+    .preview-lab .device-wrapper .promo-secondary,
+    .preview-lab .device-wrapper .promo-limited {
+      font-size: 2.1rem;
+    }
+
+    .preview-lab .device-wrapper .promo-code {
+      font-size: 2.1rem;
+    }
+
+    /* Keep the block above the hero image pills */
+    .preview-lab .device-wrapper .promo-block {
+      z-index: 3;
+    }
   </style>
 </head>
 
-<body>
+<body class="preview-lab">
   <div class="wrap">
     <main>
       <aside class="panel" aria-label="Controls">
@@ -1141,10 +1238,10 @@
             </select>
           </div>
 
-          <div class="field"><label><input type="checkbox" id="keepInView"> Keep in view on load</label>
+          <!-- <div class="field"><label><input type="checkbox" id="keepInView"> Keep in view on load</label>
             <div style="font-size:11px;opacity:.75;margin-top:4px">Nudges the promo into the visible area on load &
               resize.</div>
-          </div>
+          </div> -->
         </div>
 
         <!-- PLP TILE CONTROLS -->
@@ -1465,6 +1562,53 @@
     /**********************
      * HP Hero preview
      **********************/
+    function renderDevicePreviews() {
+      const src = document.getElementById('previewBlock');
+      if (!src) return;
+
+      // Remove any previous clones
+      document.querySelectorAll('.device-wrapper .promo-block[data-device-clone]').forEach(n => n.remove());
+
+      // Collect targets
+      const targets = document.querySelectorAll('.device-wrapper .rep-hero');
+
+      // Compute classes to carry over: keep ONLY the mobile position class, strip desktop one
+      const cls = Array.from(src.classList);
+      const mobilePos = cls.find(c => /^m-pos-/.test(c)) || 'm-pos-bottom-left';
+
+      targets.forEach(t => {
+        const clone = src.cloneNode(true);
+
+        // Mark & sanitize
+        clone.removeAttribute('id');
+        clone.setAttribute('data-device-clone', 'true');
+        // reset offsets so our mobile-position rules take effect
+        clone.style.setProperty('--ox', '0px');
+        clone.style.setProperty('--oy', '0px');
+
+        // Keep just the mobile class
+        clone.className = `promo-block ${mobilePos}`;
+
+        // Do not keep keep-in-view on device clones (tiny canvases don’t need it)
+        clone.removeAttribute('data-keep-in-view');
+        if (clone.dataset) delete clone.dataset.keepInView;
+
+        // Append into the hero inside each device screen
+        t.appendChild(clone);
+      });
+    }
+
+    // After your refreshHP() updates text/CTAs, mirror into devices
+    (function wireDeviceMirroring() {
+      const _refreshHP = refreshHP;
+      window.refreshHP = function () {
+        _refreshHP();
+        renderDevicePreviews();
+      };
+      // initial render
+      renderDevicePreviews();
+    })();
+
     function refreshHP() {
       pv.limited.textContent = (els.limitedText.value || '').trim();
       pv.limited.style.display = els.limitedText.value?.trim() ? '' : 'none';
@@ -1495,6 +1639,8 @@
         if (iframe && iframe.parentNode) iframe.parentNode.removeChild(iframe);
         if (videoEl) videoEl.style.display = '';
       }
+      renderDevicePreviews();
+
     }
 
     /**********************
@@ -1532,10 +1678,9 @@
   @media (max-width:768px){#ctPromoBlock .cta.hide-mobile{display:none!important}}
   @media (max-width:1200px){#ctPromoBlock .promo-campaign-callout{font-size:6rem}#ctPromoBlock .promo-main-callout{font-size:4.8rem}#ctPromoBlock .promo-savings,#ctPromoBlock .promo-secondary,#ctPromoBlock .promo-limited{font-size:2.6rem}#ctPromoBlock .promo-code{font-size:2.6rem}}
   @media (max-width:1024px){#ctPromoBlock .promo-campaign-callout{font-size:4.8rem}#ctPromoBlock .promo-main-callout{font-size:3.8rem}#ctPromoBlock .promo-savings,#ctPromoBlock .promo-secondary,#ctPromoBlock .promo-limited{font-size:2.4rem}#ctPromoBlock .promo-code{font-size:2.4rem}}
-  @media (max-width:768px){#ctPromoBlock{max-width:94vw}#ctPromoBlock .promo-campaign-callout{font-size:4rem}#ctPromoBlock .promo-main-callout{font-size:3.4rem}#ctPromoBlock .promo-savings,#ctPromoBlock .promo-secondary,#ctPromoBlock .promo-limited{font-size:2.2rem}#ctPromoBlock .promo-code{font-size:2.2rem}}
-  @media (max-width:768px){#ctPromoBlock{max-width:96vw}#ctPromoBlock .promo-campaign-callout{font-size:3.6rem}#ctPromoBlock .promo-main-callout{font-size:3rem}#ctPromoBlock .promo-savings,#ctPromoBlock .promo-secondary,#ctPromoBlock .promo-limited{font-size:2.1rem}#ctPromoBlock .promo-code{font-size:2.1rem}}
-  @media (min-width:768px){#ctPromoBlock[class*='d-pos-']{top:auto;right:auto;bottom:auto;left:auto}#ctPromoBlock.d-pos-top-left{top:24px;left:24px;transform:translate(var(--ox),var(--oy))}#ctPromoBlock.d-pos-top-center{top:24px;left:50%;transform:translate(calc(-50% + var(--ox)),var(--oy))}#ctPromoBlock.d-pos-top-right{top:24px;right:24px;transform:translate(var(--ox),var(--oy))}#ctPromoBlock.d-pos-middle-left{top:50%;left:24px;transform:translate(var(--ox),calc(-50% + var(--oy)))}#ctPromoBlock.d-pos-center{top:50%;left:50%;transform:translate(calc(-50% + var(--ox)),calc(-50% + var(--oy)))}#ctPromoBlock.d-pos-middle-right{top:50%;right:24px;transform:translate(var(--ox),calc(-50% + var(--oy)))}#ctPromoBlock.d-pos-bottom-left{bottom:24px;left:24px;transform:translate(var(--ox),var(--oy))}#ctPromoBlock.d-pos-bottom-center{left:50%;bottom:24px;transform:translate(calc(-50% + var(--ox)),var(--oy))}#ctPromoBlock.d-pos-bottom-right{bottom:24px;right:24px;transform:translate(var(--ox),var(--oy))}}
-  @media (max-width:767px){#ctPromoBlock[class*='m-pos-']{top:auto;right:auto;bottom:auto;left:auto}#ctPromoBlock.m-pos-top-left{top:24px;left:24px;transform:translate(var(--ox),var(--oy))}#ctPromoBlock.m-pos-top-center{top:24px;left:50%;transform:translate(calc(-50% + var(--ox)),var(--oy))}#ctPromoBlock.m-pos-top-right{top:24px;right:24px;transform:translate(var(--ox),var(--oy))}#ctPromoBlock.m-pos-middle-left{top:50%;left:24px;transform:translate(var(--ox),calc(-50% + var(--oy)))}#ctPromoBlock.m-pos-center{top:50%;left:50%;transform:translate(calc(-50% + var(--ox)),calc(-50% + var(--oy)))}#ctPromoBlock.m-pos-middle-right{top:50%;right:24px;transform:translate(var(--ox),calc(-50% + var(--oy)))}#ctPromoBlock.m-pos-bottom-left{bottom:24px;left:24px;transform:translate(var(--ox),var(--oy))}#ctPromoBlock.m-pos-bottom-center{width: 100%;align-items: center;        display: flex
+  @media (max-width:768px){#ctPromoBlock{max-width:90vw}#ctPromoBlock .promo-campaign-callout{font-size:3.6rem}#ctPromoBlock .promo-main-callout{font-size:3.4rem}#ctPromoBlock .promo-savings,#ctPromoBlock .promo-secondary,#ctPromoBlock .promo-limited{font-size:2.5rem}#ctPromoBlock .promo-code{font-size:2.5rem}}
+  @media (min-width:768px){#ctPromoBlock[class*='d-pos-']{top:auto;right:auto;bottom:auto;left:auto}#ctPromoBlock.d-pos-top-left{top:36px;left:0px;transform:translate(var(--ox),var(--oy))}#ctPromoBlock.d-pos-top-center{top:36px;left:50%;transform:translate(calc(-50% + var(--ox)),var(--oy))}#ctPromoBlock.d-pos-top-right{top:36px;right:24px;transform:translate(var(--ox),var(--oy))}#ctPromoBlock.d-pos-middle-left{top:50%;left:0px;transform:translate(var(--ox),calc(-50% + var(--oy)))}#ctPromoBlock.d-pos-center{top:50%;left:50%;transform:translate(calc(-50% + var(--ox)),calc(-50% + var(--oy)))}#ctPromoBlock.d-pos-middle-right{top:50%;right:24px;transform:translate(var(--ox),calc(-50% + var(--oy)))}#ctPromoBlock.d-pos-bottom-left{bottom:24px;left:0px;transform:translate(var(--ox),var(--oy))}#ctPromoBlock.d-pos-bottom-center{left:50%;bottom:24px;transform:translate(calc(-50% + var(--ox)),var(--oy))}#ctPromoBlock.d-pos-bottom-right{bottom:24px;right:24px;transform:translate(var(--ox),var(--oy))}}
+  @media (max-width:767px){#ctPromoBlock[class*='m-pos-']{top:auto;right:auto;bottom:auto;left:auto}#ctPromoBlock.m-pos-top-left{top:36px;left:0px;transform:translate(var(--ox),var(--oy))}#ctPromoBlock.m-pos-top-center{top:36px;left:50%;transform:translate(calc(-50% + var(--ox)),var(--oy))}#ctPromoBlock.m-pos-top-right{top:36px;right:24px;transform:translate(var(--ox),var(--oy))}#ctPromoBlock.m-pos-middle-left{top:50%;left:0px;transform:translate(var(--ox),calc(-50% + var(--oy)))}#ctPromoBlock.m-pos-center{top:50%;left:50%;transform:translate(calc(-50% + var(--ox)),calc(-50% + var(--oy)))}#ctPromoBlock.m-pos-middle-right{top:50%;right:24px;transform:translate(var(--ox),calc(-50% + var(--oy)))}#ctPromoBlock.m-pos-bottom-left{bottom:24px;left:0px;transform:translate(var(--ox),var(--oy))}#ctPromoBlock.m-pos-bottom-center{width: 100%;align-items: center;        display: flex
 ;left:50%;bottom:24px;transform:translate(calc(-50% + var(--ox)),var(--oy))}#ctPromoBlock.m-pos-bottom-right{bottom:24px;right:24px;transform:translate(var(--ox),var(--oy))}}
  .cta{width: 220px;
     display: flex
@@ -1585,7 +1730,42 @@ ease, transform .08s
 ease;};
 </style>`;
 
-    const EXPORTED_KEEPINVIEW_JS = ['<scr', 'ipt>(function(){', "var el=document.getElementById('ctPromoBlock');", 'if(!el) return;', "if(el.dataset.keepInView!=='true' && el.getAttribute('data-keep-in-view')!=='true') return;", "var margin=parseInt(el.dataset.keepMargin||'16',10);", 'function clamp(){', "el.style.setProperty('--ox','0px');", "el.style.setProperty('--oy','0px');", 'var r=el.getBoundingClientRect(), vw=window.innerWidth, vh=window.innerHeight;', 'var dx=0, dy=0;', 'if(r.left < margin) dx += (margin - r.left);', 'if(vw - r.right < margin) dx -= (margin - (vw - r.right));', 'if(r.top < margin) dy += (margin - r.top);', 'if(vh - r.bottom < margin) dy -= (margin - (vh - r.bottom));', "el.style.setProperty('--ox', Math.round(dx)+'px');", "el.style.setProperty('--oy', Math.round(dy)+'px');", '}', 'var raf=0; function schedule(){ if(raf) return; raf=requestAnimationFrame(function(){raf=0; clamp();}); }', "window.addEventListener('load', schedule, {passive:true});", "window.addEventListener('resize', schedule, {passive:true});", 'schedule();', '})();', '<\/scr', 'ipt>'].join('');
+    const EXPORTED_KEEPINVIEW_JS = [
+      '<scr', 'ipt>(function(){',
+      "var el=document.getElementById('ctPromoBlock');",
+      "if(!el) return;",
+      "if(el.dataset.keepInView!=='true' && el.getAttribute('data-keep-in-view')!=='true') return;",
+
+      // Default bottom margin = 36px
+      "var baseMargin=36;",
+
+      // Try to detect safe-area inset via CSS env() by reading a computed var
+      "var test = document.createElement('div');",
+      "test.style.cssText='position:fixed;bottom:0;height:0;visibility:hidden;padding-bottom:env(safe-area-inset-bottom)';",
+      "document.body.appendChild(test);",
+      "var inset = parseInt(window.getComputedStyle(test).paddingBottom,10)||0;",
+      "document.body.removeChild(test);",
+
+      "var margin = baseMargin + inset;",
+
+      "function clamp(){",
+      "el.style.setProperty('--ox','0px');", // never shift X
+      "el.style.setProperty('--oy','0px');",
+      "var r=el.getBoundingClientRect(), vh=window.innerHeight;",
+      "var dy=0;",
+      "if(r.top < margin) dy += (margin - r.top);",
+      "if(vh - r.bottom < margin) dy -= (margin - (vh - r.bottom));",
+      "el.style.setProperty('--oy', Math.round(dy)+'px');",
+      "}",
+
+      "var raf=0; function schedule(){ if(raf) return; raf=requestAnimationFrame(function(){raf=0; clamp();}); }",
+      "window.addEventListener('load', schedule, {passive:true});",
+      "window.addEventListener('resize', schedule, {passive:true});",
+      "schedule();",
+      "})();",
+      "<\\/scr", "ipt>"
+    ].join('');
+
 
     function buildHP() {
       const tmp = els.preview.cloneNode(true);
@@ -1594,7 +1774,8 @@ ease;};
       tmp.removeAttribute('tabindex');
       tmp.setAttribute('role', 'region');
       tmp.setAttribute('aria-label', 'Promotional content');
-      if (els.keepInView && els.keepInView.checked) { tmp.setAttribute('data-keep-in-view', 'true'); }
+      //if (els.keepInView && els.keepInView.checked) { tmp.setAttribute('data-keep-in-view', 'true'); }
+      tmp.setAttribute('data-keep-in-view', 'true')
       tmp.style.removeProperty('--ox'); tmp.style.removeProperty('--oy');
       const d = els.positionDesktop.value; const m = els.positionMobile.value; tmp.className = `d-${d} m-${m}`;
       // REQUIRED export classes for CTAs
